@@ -69,25 +69,42 @@ You can then execute your native executable with: `./build/word-count-1.0-SNAPSH
 
 If you want to learn more about building native executables, please consult https://quarkus.io/guides/gradle-tooling.
 
+## Run application with Docker
+Before building the container image run:
+```shell
+ ./gradlew build
+```
+
+ Then, build the image with:
+
+```shell
+ docker build -f src/main/docker/Dockerfile.jvm -t quarkus/word-count-jvm .
+```
+ Then run the container using:
+
+ ```shell
+ docker run -i --rm -p 8080:8080 quarkus/word-count-jvm
+ ```
+
 ## Testing
 
 ### Unit
-```
+```shell script
 ./gradlew test
 ```
 
 ### Integration
-```
+```shell script
 ./gradlew testNative
 ```
 
 ### Manual
 
 You can run the following in the command line to test once the application is running locally
-```
+```shell script
 curl -H "Content-Type: application/json" -X POST -d '{"sentence":"The sun shines over the lake"}' http://0.0.0.0:8080/wordFrequency/highest
 ```
-```
+```shell script
 curl -H "Content-Type: application/json" -X POST -d '{"sentence":"The sun shines over the lake","word":"shines"}' http://0.0.0.0:8080/wordFrequency/frequency
 ```
 ```
@@ -97,7 +114,7 @@ curl -H "Content-Type: application/json" -X POST -d '{"sentence":"The sun shines
 ## Troubleshooting
 Having trouble running the project? Make sure you have JAVA_HOME and PATH set correctly
 For example:
-```
+```shell script
 export PATH=/Library/Java/JavaVirtualMachines/graalvm-jdk-17.0.8+9.1/Contents/Home/bin/:$PATH
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-jdk-17.0.8+9.1/Contents/Home/
 ```
