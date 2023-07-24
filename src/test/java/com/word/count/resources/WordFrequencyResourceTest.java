@@ -23,6 +23,17 @@ public class WordFrequencyResourceTest {
     }
 
     @Test
+    public void testHighestFrequencyValidationFailure() {
+        given()
+                .body(new WordFrequencyRequest(null, null, null))
+                .contentType(MediaType.APPLICATION_JSON)
+                .when().post("/wordFrequency/highest")
+                .then()
+                .statusCode(400)
+                .body(is("{\"errorMessage\":\"Provided sentence cannot be empty or null.\"}"));
+    }
+
+    @Test
     public void testFrequencyForWord() {
         given()
                 .body(new WordFrequencyRequest("The sun shines over the lake", "Shines", null))
@@ -31,6 +42,28 @@ public class WordFrequencyResourceTest {
                 .then()
                 .statusCode(200)
                 .body(is("{\"frequency\":1}"));
+    }
+
+    @Test
+    public void testFrequencyForWordValidationFailureSentence() {
+        given()
+                .body(new WordFrequencyRequest("", "Shines", null))
+                .contentType(MediaType.APPLICATION_JSON)
+                .when().post("/wordFrequency/frequency")
+                .then()
+                .statusCode(400)
+                .body(is("{\"errorMessage\":\"Provided sentence cannot be empty or null.\"}"));
+    }
+
+    @Test
+    public void testFrequencyForWordValidationFailureWord() {
+        given()
+                .body(new WordFrequencyRequest("The sun shines over the lake", "", null))
+                .contentType(MediaType.APPLICATION_JSON)
+                .when().post("/wordFrequency/frequency")
+                .then()
+                .statusCode(400)
+                .body(is("{\"errorMessage\":\"Provided word cannot be empty or null and must contain only alpha characters.\"}"));
     }
 
     @Test
@@ -53,6 +86,17 @@ public class WordFrequencyResourceTest {
                 .then()
                 .statusCode(200)
                 .body(is("[{\"frequency\":2,\"word\":\"the\"},{\"frequency\":1,\"word\":\"lake\"}]"));
+    }
+
+    @Test
+    public void testMostFrequentNWordsValidationFailure() {
+        given()
+                .body(new WordFrequencyRequest("    ", null, 2))
+                .contentType(MediaType.APPLICATION_JSON)
+                .when().post("/wordFrequency/mostFrequent")
+                .then()
+                .statusCode(400)
+                .body(is("{\"errorMessage\":\"Provided sentence cannot be empty or null.\"}"));
     }
 
 }
